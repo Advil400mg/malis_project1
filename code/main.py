@@ -1,9 +1,11 @@
 import numpy as np
-from knn import KNN
+from knn import KNN, check_accuracy
+import matplotlib.pyplot as plt
 import csv
 from sklearn.neighbors import KNeighborsClassifier
 
-N_neig = 9
+N_neig = 19
+
 
 def read_data(filename):
     X = []
@@ -25,6 +27,7 @@ def read_data(filename):
 
 
 
+
 def main():
     X_li, y_li = read_data("./data/training.csv")
     X_train = np.array(X_li[1:])
@@ -32,31 +35,41 @@ def main():
 
     X_li, y_li = read_data("./data/validation.csv")
     X_val = np.array(X_li[1:])
+    y_li = y_li[1:]
 
     k = KNN(N_neig)
-    neigh = KNeighborsClassifier(n_neighbors=N_neig)
-
-
     k.train(X_train, y_train)
-    neigh.fit(X_train, y_train)
 
-    knn_predict = k.predict(X_val[:19],50)
-    scikit_predict = neigh.predict(X_val[:19])
+    print(k.best_k(X_val, y_li, 93))
+    # knn_predict = k.predict(X_val,50)
 
-    print(knn_predict)
-    print(scikit_predict)
 
-    same_as_scikit = True
-    for i in range(len(scikit_predict)):
-        if same_as_scikit == False:
-            continue
-        if knn_predict[i] != scikit_predict[i]:
-            same_as_scikit = False
+    # neigh = KNeighborsClassifier(n_neighbors=N_neig)
+    # neigh.fit(X_train, y_train)
+    # scikit_predict = neigh.predict(X_val)
     
-    if(same_as_scikit):
-        print("Accurate")
-    else:
-        print("Not accurate")
+
+    # acc_li = []
+    # k = KNN(1)
+    # k.train(X_train, y_train)
+    # for i in range(1,100):
+    #     k.k = i
+    #     # k.train(X_train, y_train)
+    #     knn_predict = k.predict(X_val,93)
+    #     acc = check_accuracy(y_li, knn_predict)
+
+    #     # neigh = KNeighborsClassifier(n_neighbors=i)
+    #     # neigh.fit(X_train, y_train)
+    #     # scikit_predict = neigh.predict(X_val)
+    #     # acc = check_accuracy(y_li, scikit_predict)
+    #     acc_li.append(acc)
+    
+
+    # print(acc_li)
+    # plt.plot(acc_li)
+    # plt.show()
+
+    # check_accuracy(y_li, knn_predict)
         
 
 if __name__ == '__main__':

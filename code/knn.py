@@ -1,6 +1,14 @@
-from scipy.spatial import distance_matrix
+from scipy.spatial import distance_matrix,distance
 import numpy as np
 import random
+
+def check_accuracy(y,y_hat):
+    cpt_right = 0
+    for i in range(len(y_hat)):
+        if y[i] == y_hat[i]:
+            cpt_right +=1
+    
+    return cpt_right/len(y_hat)*100
 
 class KNN:
     '''
@@ -35,13 +43,33 @@ class KNN:
             self.X.append(X[i])
             self.y.append(y[i])
                   
-       
-    def tests(self):
-        tt = np.array([1,7,6])
-        sorted = np.sort(tt)
 
-        print(tt)
-        print(sorted)
+
+
+    def best_k(self, X_new, y ,p, k_max = 100):
+        dst = self.minkowski_dist(X_new, p)
+
+
+        acc_li = []
+        for k in range(1, k_max):
+            y_hat = []
+            
+            for elm in dst:
+                idx = np.argpartition(elm, k)[:k]
+                sum = 0
+                for i in idx:
+                    sum+=self.y[i]
+                avg = sum/k
+                if avg>0.5:
+                    y_hat.append(1.)
+                elif avg<0.5:
+                    y_hat.append(0.)
+                else:
+                    y_hat.append(random.randint(0.,1.))
+
+            acc_li.append(check_accuracy(y,np.array(y_hat)))
+        
+        return acc_li.index(max(acc_li))
 
 
     def predict(self,X_new,p):
@@ -64,11 +92,11 @@ class KNN:
                 sum+=self.y[i]
             avg = sum/self.k
             if avg>0.5:
-                y_hat.append(1)
+                y_hat.append(1.)
             elif avg<0.5:
-                y_hat.append(0)
+                y_hat.append(0.)
             else:
-                y_hat.append(random.randint(0,1))
+                y_hat.append(random.randint(0.,1.))
 
         
         return np.array(y_hat)
@@ -87,8 +115,9 @@ class KNN:
         for new_point in X_new:
             buffer = []
             for point in self.X:
-                distance = ((abs(new_point[0] - point[0]))**p + (abs(new_point[1] - point[1]))**p)**1/p
-                buffer.append(distance)
+                dist = pow(((pow(abs(new_point[0] - point[0]),p)) + (pow(abs(new_point[1] - point[1]),p))),1/p)
+                # print(f'{dist}---{distance.minkowski(new_point, point, p)}')
+                buffer.append(dist)
             dst.append(buffer)
 
     
