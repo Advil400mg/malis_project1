@@ -1,10 +1,10 @@
 import numpy as np
-from knn import KNN, check_accuracy
+from knn import KNN
 import matplotlib.pyplot as plt
 import csv
 from sklearn.neighbors import KNeighborsClassifier
 
-N_neig = 19
+N_neig = 18
 
 
 def read_data(filename):
@@ -41,35 +41,16 @@ def main():
     k.train(X_train, y_train)
 
     print(k.best_k(X_val, y_li, 93))
-    # knn_predict = k.predict(X_val,50)
+    # knn_predict = k.predict(X_val,93)
+    # acc = np.sum(y_li == knn_predict)/len(knn_predict) * 100
+    # print(f'Accuracy: {acc}%')
 
 
     # neigh = KNeighborsClassifier(n_neighbors=N_neig)
     # neigh.fit(X_train, y_train)
     # scikit_predict = neigh.predict(X_val)
+
     
-
-    # acc_li = []
-    # k = KNN(1)
-    # k.train(X_train, y_train)
-    # for i in range(1,100):
-    #     k.k = i
-    #     # k.train(X_train, y_train)
-    #     knn_predict = k.predict(X_val,93)
-    #     acc = check_accuracy(y_li, knn_predict)
-
-    #     # neigh = KNeighborsClassifier(n_neighbors=i)
-    #     # neigh.fit(X_train, y_train)
-    #     # scikit_predict = neigh.predict(X_val)
-    #     # acc = check_accuracy(y_li, scikit_predict)
-    #     acc_li.append(acc)
-    
-
-    # print(acc_li)
-    # plt.plot(acc_li)
-    # plt.show()
-
-    # check_accuracy(y_li, knn_predict)
         
 
 if __name__ == '__main__':

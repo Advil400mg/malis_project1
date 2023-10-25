@@ -1,14 +1,7 @@
+from collections import Counter
 from scipy.spatial import distance_matrix,distance
 import numpy as np
 import random
-
-def check_accuracy(y,y_hat):
-    cpt_right = 0
-    for i in range(len(y_hat)):
-        if y[i] == y_hat[i]:
-            cpt_right +=1
-    
-    return cpt_right/len(y_hat)*100
 
 class KNN:
     '''
@@ -56,18 +49,25 @@ class KNN:
             
             for elm in dst:
                 idx = np.argpartition(elm, k)[:k]
-                sum = 0
-                for i in idx:
-                    sum+=self.y[i]
-                avg = sum/k
-                if avg>0.5:
-                    y_hat.append(1.)
-                elif avg<0.5:
-                    y_hat.append(0.)
-                else:
-                    y_hat.append(random.randint(0.,1.))
+                lbls = [self.y[i] for i in idx]
 
-            acc_li.append(check_accuracy(y,np.array(y_hat)))
+                # print(lbls,end=' ')
+                # print(Counter(lbls).most_common(), end=' ')
+                # print(Counter(lbls).most_common()[0][0])
+
+                y_hat.append(Counter(lbls).most_common()[0][0])
+                # sum = 0
+                # for i in idx:
+                #     sum+=self.y[i]
+                # avg = sum/k
+                # if avg>0.5:
+                #     y_hat.append(1.)
+                # elif avg<0.5:
+                #     y_hat.append(0.)
+                # else:
+                #     y_hat.append(random.randint(0.,1.))
+
+            acc_li.append(np.sum(y==np.array(y_hat))/len(y_hat))
         
         return acc_li.index(max(acc_li))
 
@@ -87,16 +87,22 @@ class KNN:
         
         for elm in dst:
             idx = np.argpartition(elm, self.k)[:self.k]
-            sum = 0
-            for i in idx:
-                sum+=self.y[i]
-            avg = sum/self.k
-            if avg>0.5:
-                y_hat.append(1.)
-            elif avg<0.5:
-                y_hat.append(0.)
-            else:
-                y_hat.append(random.randint(0.,1.))
+
+
+            lbls = [self.y[i] for i in idx]
+
+            y_hat.append(Counter(lbls).most_common()[0][0])
+
+            # sum = 0
+            # for i in idx:
+            #     sum+=self.y[i]
+            # avg = sum/self.k
+            # if avg>0.5:
+            #     y_hat.append(1.)
+            # elif avg<0.5:
+            #     y_hat.append(0.)
+            # else:
+            #     y_hat.append(random.randint(0.,1.))
 
         
         return np.array(y_hat)
